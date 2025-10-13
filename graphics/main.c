@@ -1,24 +1,23 @@
-/* from https://www.raylib.com/examples.html */
-
 #include "raylib.h"
+
+static const int screenWidth = 800;
+static const int screenHeight = 450;
 
 int main(void)
 {
-    const int screenWidth = 800;
-    const int screenHeight = 450;
-
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(screenWidth, screenHeight, "Physics Engine");
 
     SetTargetFPS(60);
 
     while (!WindowShouldClose())
     {
         BeginDrawing();
-
-            ClearBackground(RAYWHITE);
-
-            DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
-
+            DrawCircle(100, 200, 20, RED);
+            DrawRectangle(200, 200, 100, 50, GREEN);
+            DrawTriangle((Vector2) {screenWidth/4.0f *2.0f, 80.0f}, 
+                         (Vector2) {screenWidth/4.0f *2.0f - 60.0f, 150.0f}, 
+                         (Vector2) {screenWidth/4.0f *2.0f + 60.0f, 150.0f}, BLUE);
+            ClearBackground(BLACK);
         EndDrawing();
     }
 
