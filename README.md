@@ -1,12 +1,12 @@
 # Физический движок
 
 ## Библиотеки:
-    [raylib](https://www.raylib.com/index.html) - Графика
+[raylib](https://www.raylib.com/index.html) - Графика
 
 ## Стиль кода:
-    https://github.com/MaJerle/c-code-style
+https://github.com/MaJerle/c-code-style
 
-    кроме названий функций: использовать PascalCase/camelCase (как в raylib)
+кроме названий функций: использовать PascalCase/camelCase (как в raylib)
 
 # Установка и использование
 
