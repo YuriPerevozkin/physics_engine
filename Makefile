@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-lraylib
 
-run: main.o
+run: graphics/main.o
 	./$<
 
 %.o: %.c
