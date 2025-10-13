@@ -12,6 +12,9 @@ https://github.com/MaJerle/c-code-style
 
 ## Установка
 
+### windows
+TODO
+
 ### arch linux
 ```sh
 sudo pacman -S raylib
