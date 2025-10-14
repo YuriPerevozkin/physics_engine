@@ -1,11 +1,22 @@
 CC=gcc
 CFLAGS=-lraylib
+SRCDIR=src
 
-run: graphics/main.o
-	./$<
+TARGET=app
+
+SRCS=$(wildcard $(SRCDIR)/*.c $(SRCDIR)/graphics/*.c)
+OBJS=$(SRCS:.c=.o)
+
+run: $(TARGET)
+	./$(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
 
 %.o: %.c
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $< -o $@ -c
 
 clean:
-	rm *.o
+	rm $(TARGET)
+	rm src/*.o
+	rm src/graphics/*.o

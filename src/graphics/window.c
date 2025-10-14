@@ -3,7 +3,7 @@
 static const int screenWidth = 800;
 static const int screenHeight = 450;
 
-int main(void)
+void draw_app()
 {
     InitWindow(screenWidth, screenHeight, "Physics Engine");
 
@@ -22,6 +22,4 @@ int main(void)
     }
 
     CloseWindow();
-
-    return 0;
 }
