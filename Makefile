@@ -4,7 +4,7 @@ SRCDIR=src
 
 TARGET=app
 
-SRCS=$(wildcard $(SRCDIR)/*.c $(SRCDIR)/graphics/*.c)
+SRCS=$(wildcard $(SRCDIR)/*.c $(SRCDIR)/graphics/*.c $(SRCDIR)/physics/*.c)
 OBJS=$(SRCS:.c=.o)
 
 run: $(TARGET)
