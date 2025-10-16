@@ -7,6 +7,11 @@ TARGET=app
 SRCS=$(wildcard $(SRCDIR)/*.c $(SRCDIR)/graphics/*.c $(SRCDIR)/physics/*.c)
 OBJS=$(SRCS:.c=.o)
 
+UNAME := $(shell uname -s)
+ifeq ($(findstring MINGW, $(UNAME)),MINGW)
+	CFLAGS += -lopengl32 -lgdi32 -lwinmm
+endif
+
 run: $(TARGET)
 	./$(TARGET)
 

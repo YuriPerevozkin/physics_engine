@@ -16,7 +16,13 @@ https://github.com/MaJerle/c-code-style
 
 ## Установка
 ### windows
-продолжение следует...
+- установите MINGW MSYS2
+```sh
+pacman -S base-devel git
+pacman -S mingw-w64-x86_64-raylib
+git clone https://github.com/YuriPerevozkin/physics_engine.git
+cd physics_engine
+```
 
 ### arch linux
 ```sh
