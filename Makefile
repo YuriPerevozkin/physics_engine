@@ -1,10 +1,9 @@
 CC=gcc
 CFLAGS=-lraylib
-SRCDIR=src
 
-TARGET=app
+TARGET=app.out
 
-SRCS=$(wildcard $(SRCDIR)/*.c $(SRCDIR)/graphics/*.c $(SRCDIR)/physics/*.c)
+SRCS=$(wildcard src/*.c src/**/*.c)
 OBJS=$(SRCS:.c=.o)
 
 UNAME := $(shell uname -s)
@@ -13,7 +12,7 @@ ifeq ($(findstring MINGW, $(UNAME)),MINGW)
 endif
 
 run: $(TARGET)
-	./$(TARGET)
+	./$<
 
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
@@ -22,6 +21,4 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) $< -o $@ -c
 
 clean:
-	rm $(TARGET)
-	rm src/*.o
-	rm src/graphics/*.o
+	rm $(OBJS) $(TARGET)
