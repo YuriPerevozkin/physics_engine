@@ -25,7 +25,7 @@ get_scalar_product(vec2_t vec1, vec2_t vec2) {
     return vec1.x * vec2.x + vec1.y * vec2.y;
 }
 
-vec2_t
+real
 vec_length(vec2_t vec){
     return sqrt(vec.x * vec.x + vec.y * vec.y);    
 }
