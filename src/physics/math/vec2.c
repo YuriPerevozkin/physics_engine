@@ -1,0 +1,24 @@
+#include "vec2.h"
+
+vec2_t
+vec_plus_vec(vec2_t vec1, vec2_t vec2) {
+    return (vec2_t) { .x = vec1.x + vec2.x,
+                      .y = vec1.y + vec2.y };
+}
+
+vec2_t
+vec_minus_vec(vec2_t vec1, vec2_t vec2) {
+    return (vec2_t) { .x = vec1.x - vec2.x,
+                      .y = vec1.y - vec2.y };
+}
+
+vec2_t
+vec_mult_by_number(vec2_t vec, real n) {
+    return (vec2_t) { .x = vec.x * n,
+                      .y = vec.y * n };
+}
+
+real
+get_scalar_product(vec2_t vec1, vec2_t vec2) {
+    return vec1.x * vec2.x + vec1.y * vec2.y;
+}
