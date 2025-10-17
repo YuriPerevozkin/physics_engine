@@ -26,17 +26,17 @@ get_scalar_product(vec2_t vec1, vec2_t vec2) {
 }
 
 vec2_t
-length_vec(vec2_t vec){
+vec_length(vec2_t vec){
     return sqrt(vec.x * vec.x + vec.y * vec.y);    
 }
 
 vec2_t
-cross_vec(vec2_t vec1, vec2_t vec2){
+get_cross_product(vec2_t vec1, vec2_t vec2){
     return vec1.x * vec2.y - vec1.y * vec2.x;
 }
 
 vec2_t
-komp_vec(vec2_t vec1,vec2_t vec2){
+get_comp_product(vec2_t vec1,vec2_t vec2){
     return(vec2_t){
     .x = vec1.x * vec2.x;
     .y = vec1.y * vec2.y;
