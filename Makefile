@@ -12,7 +12,7 @@ ifeq ($(findstring MINGW, $(UNAME)),MINGW)
 endif
 
 run: $(TARGET)
-	./$<
+	__GLX_VENDOR_LIBRARY_NAME=mesa ./$<
 
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
