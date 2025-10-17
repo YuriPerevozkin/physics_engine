@@ -30,7 +30,7 @@ vec_length(vec2_t vec){
     return sqrt(vec.x * vec.x + vec.y * vec.y);    
 }
 
-vec2_t
+real
 get_cross_product(vec2_t vec1, vec2_t vec2){
     return vec1.x * vec2.y - vec1.y * vec2.x;
 }
@@ -38,7 +38,7 @@ get_cross_product(vec2_t vec1, vec2_t vec2){
 vec2_t
 get_comp_product(vec2_t vec1,vec2_t vec2){
     return(vec2_t){
-    .x = vec1.x * vec2.x;
-    .y = vec1.y * vec2.y;
+        .x = vec1.x * vec2.x,
+        .y = vec1.y * vec2.y
     };
 }
