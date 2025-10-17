@@ -1,6 +1,6 @@
+#include <stddef.h>
 #include <stdlib.h>
-#include "graphics/window.h"
-#include "physics/physics.h"
+#include "graphics/graphics.h"
 
 typedef struct {
     object_t* array;
@@ -10,8 +10,9 @@ typedef struct {
 
 object_array
 init_object_array() {
-    object_t* array = malloc(sizeof(object_t));
-    return (object_array) {array, 0, 1};
+    size_t default_size = 5;
+    object_t* array = malloc(sizeof(object_t) * default_size);
+    return (object_array) {array, 0, default_size};
 }
 
 void
@@ -26,9 +27,13 @@ add_object(object_array* array, object_t object) {
 int
 main() {
     object_array objects = init_object_array();
-    add_object(&objects, (object_t) {});
+    add_object(&objects, create_circle((vec2_t) {400.0f, 200.0f}, 20.0f));
+    add_object(&objects, create_triangle((vec2_t) {200.0f, 100.0f}, 
+                                         (vec2_t) {130.0f, 170.0f},
+                                         (vec2_t) {270.0f, 170.0f}));
+    add_object(&objects, create_rectangle((vec2_t) {500.0f, 150.0f}, 40, 40));
 
-    world_t world = init_world(objects.array);
+    world_t world = init_world(objects.array, objects.used);
 
-    draw_app();
+    draw_app(world);
 }
