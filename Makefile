@@ -1,10 +1,10 @@
 CC=gcc
-CFLAGS=-lraylib
+CFLAGS=-lraylib -lm
 
 TARGET=app.out
 
-SRCS=$(wildcard src/*.c src/**/*.c)
-OBJS=$(SRCS:.c=.o)
+SRCS:=$(shell find src -name '*.c')
+OBJS=$(patsubst %.c, %.o, $(SRCS))
 
 UNAME := $(shell uname -s)
 ifeq ($(findstring MINGW, $(UNAME)),MINGW)
@@ -15,10 +15,10 @@ run: $(TARGET)
 	__GLX_VENDOR_LIBRARY_NAME=mesa ./$<
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $^ -o $@
 
 %.o: %.c
-	$(CC) $(CFLAGS) $< -o $@ -c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm $(OBJS) $(TARGET)
