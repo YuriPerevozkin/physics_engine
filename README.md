@@ -35,7 +35,9 @@ cd physics_engine
 - установка с помощью homebrew
 ```sh
 brew install raylib
-brew install pkg-config 
+brew install pkg-config
+git clone https://github.com/YuriPerevozkin/physics_engine.git
+cd physics_engine 
 ```
 
 ## Компиляция
