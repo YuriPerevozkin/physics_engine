@@ -32,7 +32,7 @@ cd physics_engine
 ```
 
 ### MacOS
-- установка с помощью [homebrew] (https://brew.sh)
+- установка с помощью [homebrew](https://brew.sh)
 ```sh
 brew install raylib
 brew install pkg-config
