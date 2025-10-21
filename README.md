@@ -16,7 +16,7 @@ https://github.com/MaJerle/c-code-style
 
 ## Установка
 ### windows
-- установите MINGW MSYS2
+- установите [MINGW MSYS2](https://www.msys2.org/)
 ```sh
 pacman -S base-devel git
 pacman -S mingw-w64-x86_64-raylib
@@ -32,7 +32,7 @@ cd physics_engine
 ```
 
 ### MacOS
-- установка с помощью homebrew
+- установка с помощью [homebrew](https://brew.sh)
 ```sh
 brew install raylib
 brew install pkg-config
