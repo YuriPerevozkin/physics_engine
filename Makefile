@@ -1,6 +1,5 @@
 CC=gcc
-CFLAGS=-lraylib -lm
-
+CFLAGS=-lraylib -lm 
 TARGET=app.out
 
 SRCS:=$(shell find src -name '*.c')
@@ -9,6 +8,10 @@ OBJS:=$(patsubst %.c, %.o, $(SRCS))
 UNAME:=$(shell uname -s)
 ifeq ($(findstring MINGW, $(UNAME)),MINGW)
 	CFLAGS += -lopengl32 -lgdi32 -lwinmm
+endif
+
+ifeq ($(findstring Darwin, $(UNAME)),Darwin)
+	CFLAGS += $(shell pkg-config --cflags --libs raylib)
 endif
 
 .PHONY: run clean
