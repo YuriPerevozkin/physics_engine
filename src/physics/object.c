@@ -1,6 +1,20 @@
 #include "object.h"
 
 object_t
+create_particle(vec2_t position, real inverse_mass) {
+    vec2_t velocity = {0.0f, 0.0f};
+    return (object_t) {
+        .type = PARTICLE,
+        .shape.particle = {
+            .position = position,
+        },
+        .velocity = velocity,
+        .acceleration = velocity,
+        .inverse_mass = inverse_mass,
+    };
+}
+
+object_t
 create_circle(vec2_t center, real radius) {
     return (object_t) {
         .type = CIRCLE,

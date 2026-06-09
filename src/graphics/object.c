@@ -4,20 +4,20 @@
 void
 draw_object(object_t object) {
     switch (object.type) {
-        case CIRCLE: {
+        case PARTICLE:
+            DrawCircle(object.shape.particle.position.x, object.shape.particle.position.y, 2, RED);
+            break;
+        case CIRCLE:
             DrawCircle(object.shape.circle.center.x, object.shape.circle.center.y, object.shape.circle.radius, RED);
             break;
-        };
-        case RECTANGLE: {
+        case RECTANGLE:
             DrawRectangle(object.shape.rectangle.start.x, object.shape.rectangle.start.y, 
                           object.shape.rectangle.width, object.shape.rectangle.height, GREEN);
             break;
-        };
-        case TRIANGLE: {
+        case TRIANGLE:
             DrawTriangle((Vector2) {object.shape.triangle.a.x, object.shape.triangle.a.y}, 
                          (Vector2) {object.shape.triangle.b.x, object.shape.triangle.b.y}, 
                          (Vector2) {object.shape.triangle.c.x, object.shape.triangle.c.y}, BLUE);
             break;
-        };
     }
 }
