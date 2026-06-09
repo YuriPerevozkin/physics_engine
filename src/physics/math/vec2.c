@@ -23,7 +23,7 @@ vec_minus_vec(vec2_t vec1, vec2_t vec2) {
 }
 
 vec2_t
-vec_mult_by_number(vec2_t vec, real n) {
+scaled_vec(vec2_t vec, real n) {
     return (vec2_t) {
         .x = vec.x * n,
         .y = vec.y * n,
