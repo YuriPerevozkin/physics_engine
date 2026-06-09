@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include "math/vec2.h"
 #include "physics.h"
@@ -6,6 +5,9 @@
 
 static const size_t DEFAULT_CAP = 5;
 static const real DURATION = 1.0f / FPS;
+static const float DAMPING = 0.997;
+static const float SLEEP_THRESHOLD = 0.001;
+
 real g = 9.807f;
 
 world_t
@@ -34,12 +36,16 @@ apply_physics(object_t* object) {
             particle_t* particle = &object->shape.particle;
             particle->position = vec_plus_vec(particle->position, scaled_vec(object->velocity, DURATION));
 
-            real mass = 1.0f / object->inverse_mass;
-            vec2_t force = {0.0f, mass*g};
+            vec2_t force = {0.0f, g / object->inverse_mass};
             vec2_t resulting_acc = object->acceleration;
             resulting_acc = vec_plus_vec(resulting_acc, scaled_vec(force, object->inverse_mass));
 
             object->velocity = vec_plus_vec(object->velocity, scaled_vec(resulting_acc, DURATION));
+            object->velocity.x = object->velocity.x * DAMPING;
+            object->velocity.y = object->velocity.y * DAMPING;
+            if (vec_length(object->velocity) < SLEEP_THRESHOLD) {
+                object->velocity = zero_vec;
+            }
             break;
     }
 }
