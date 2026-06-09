@@ -1,10 +1,19 @@
+#ifndef OBJECT_H
+#define OBJECT_H
+
+
 #include "math/vec2.h"
 
 typedef enum {
+    PARTICLE,
     CIRCLE,
     RECTANGLE,
     TRIANGLE,
 } object_type_e;
+
+typedef struct particle {
+    vec2_t position;
+} particle_t;
 
 typedef struct circle {
     vec2_t center;
@@ -26,12 +35,21 @@ typedef struct triangle {
 typedef struct object {
     object_type_e type;
     union {
+        particle_t particle;
         circle_t circle;
         rectangle_t rectangle;
         triangle_t triangle;
     } shape;
+    vec2_t velocity;
+    vec2_t acceleration;
+    real inverse_mass;
 } object_t;
 
+/* object.c */
+object_t create_particle(vec2_t position, real inverse_mass);
 object_t create_circle(vec2_t center, real radius);
 object_t create_rectangle(vec2_t start, int height, int width);
 object_t create_triangle(vec2_t a, vec2_t b, vec2_t c);
+
+
+#endif // OBJECT_H
