@@ -28,6 +28,10 @@ main() {
     static int show_input = 0;
     static char g_input[64] = "9.807";
 
+    static int creating_object = 0;
+    static vec2_t mouse_start;
+    static vec2_t mouse_end;
+
     while (!WindowShouldClose())
     {
         Vector2 mouse_pos = GetMousePosition();
@@ -39,14 +43,26 @@ main() {
             g_text_color = WHITE;
         }
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            if (!show_input) {
-                if (mouse_on_g_text) {
-                    show_input = 1;
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            if (!creating_object) {
+                if (!show_input) {
+                    if (mouse_on_g_text) {
+                        show_input = 1;
+                    }
+                    else {
+                        creating_object = 1;
+                        mouse_start = (vec2_t){mouse_pos.x, mouse_pos.y};
+                    }
                 }
-                else {
-                    add_object(&world, create_particle((vec2_t) {mouse_pos.x, mouse_pos.y}, 1.0f/1));
-                }
+            }
+        }
+        if (IsMouseButtonUp(MOUSE_BUTTON_LEFT)) {
+            if (creating_object) {
+                mouse_end = (vec2_t){mouse_pos.x, mouse_pos.y};
+                vec2_t drag_vector = vec_minus_vec(mouse_end, mouse_start);
+                add_object(&world, create_particle((vec2_t) {mouse_start.x, mouse_start.y}, 1.0f/1));
+                world.objects[world.objects_n-1].velocity = drag_vector;
+                creating_object = 0;
             }
         }
 
