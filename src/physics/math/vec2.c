@@ -1,6 +1,8 @@
 #include "vec2.h"
 #include "precision.h"
 
+vec2_t zero_vec = {0.0f, 0.0f};
+
 real
 vec_length(vec2_t vec) {
     return real_sqrt(vec.x * vec.x + vec.y * vec.y);    
