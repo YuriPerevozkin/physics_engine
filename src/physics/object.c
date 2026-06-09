@@ -1,15 +1,15 @@
+#include "math/vec2.h"
 #include "object.h"
 
 object_t
 create_particle(vec2_t position, real inverse_mass) {
-    vec2_t velocity = {0.0f, 0.0f};
     return (object_t) {
         .type = PARTICLE,
         .shape.particle = {
             .position = position,
         },
-        .velocity = velocity,
-        .acceleration = velocity,
+        .velocity = zero_vec,
+        .acceleration = zero_vec,
         .inverse_mass = inverse_mass,
     };
 }

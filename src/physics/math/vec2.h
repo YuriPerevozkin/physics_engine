@@ -9,6 +9,8 @@ typedef struct vec2 {
     real y;
 } vec2_t;
 
+const vec2_t zero_vec = {0.0f, 0.0f};
+
 real vec_length(vec2_t vec);
 vec2_t vec_plus_vec(vec2_t vec1, vec2_t vec2);
 vec2_t vec_minus_vec(vec2_t vec1, vec2_t vec2);
