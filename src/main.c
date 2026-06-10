@@ -1,6 +1,10 @@
+#include <math.h>
+#include <time.h>
+#include <stdlib.h>
 #include <raylib.h>
 #define RAYGUI_IMPLEMENTATION
 #include "../lib/raygui.h"
+#include "physics/physics.h"
 #include "graphics/graphics.h"
 #include "physics/math/vec2.h"
 #include "physics/object.h"
@@ -10,6 +14,7 @@ static const int SCREEN_HEIGHT = 450;
 
 int
 main() {
+    srand(time(NULL));
     world_t world = init_world();
 
     // add_object(&world, create_circle((vec2_t) {400.0f, 200.0f}, 20.0f));
@@ -17,6 +22,11 @@ main() {
     //                                      (vec2_t) {130.0f, 170.0f},
     //                                      (vec2_t) {270.0f, 170.0f}));
     // add_object(&world, create_rectangle((vec2_t) {500.0f, 150.0f}, 40, 40));
+    add_object(&world, create_particle((vec2_t) {300.0f, 300.0f}, 1.0f/100));
+    world.objects[world.objects_n-1].velocity.y = -60.0f;
+    world.objects[world.objects_n-1].acceleration.y = -20.0f;
+    int firework_life = 200;
+    int firework_alive = 1;
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Physics Engine");
 
@@ -74,6 +84,20 @@ main() {
             if (result >= 1) {
                 show_input = 0;
                 g = atof(g_input);
+            }
+        }
+        if (firework_alive) {
+            firework_life--;
+            if (firework_life <= 0) {
+                for (int i = 0; i < 500; i++) {
+                    add_object(&world, create_particle(world.objects[0].shape.particle.position, 1.0f/10.0f));
+                    real random_angle = ((real) rand() / RAND_MAX) * 2.0f * PI;
+                    real random_speed = ((real) rand() / RAND_MAX) * 100.0f;
+                    world.objects[world.objects_n-1].velocity.x = cosf(random_angle) * random_speed;
+                    world.objects[world.objects_n-1].velocity.y = sinf(random_angle) * random_speed;
+                }
+                remove_object(&world, 0);
+                firework_alive = 0;
             }
         }
         BeginDrawing();
