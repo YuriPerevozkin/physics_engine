@@ -30,6 +30,12 @@ add_object(world_t* world, object_t object) {
 }
 
 void
+remove_object(world_t* world, int index) {
+    world->objects[index] = world->objects[world->objects_n - 1];
+    world->objects_n--;
+}
+
+void
 apply_physics(object_t* object) {
     switch (object->type) {
         case PARTICLE:;
