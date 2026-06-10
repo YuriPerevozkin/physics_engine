@@ -13,7 +13,8 @@ typedef struct world {
     size_t cap;
 } world_t;
 
-extern real g;
+extern float g;
+extern float damping;
 
 /* physics.c */
 world_t init_world();

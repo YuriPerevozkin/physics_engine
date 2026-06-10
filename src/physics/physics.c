@@ -4,11 +4,11 @@
 #include "object.h"
 
 static const size_t DEFAULT_CAP = 5;
-static const real DURATION = 1.0f / FPS;
-static const float DAMPING = 0.997;
+static const float DURATION = 1.0f / FPS;
 static const float SLEEP_THRESHOLD = 0.001;
 
-real g = 9.807f;
+float g = 9.807f;
+float damping = 0.997;
 
 world_t
 init_world() {
@@ -47,8 +47,8 @@ apply_physics(object_t* object) {
             resulting_acc = vec_plus_vec(resulting_acc, scaled_vec(force, object->inverse_mass));
 
             object->velocity = vec_plus_vec(object->velocity, scaled_vec(resulting_acc, DURATION));
-            object->velocity.x = object->velocity.x * DAMPING;
-            object->velocity.y = object->velocity.y * DAMPING;
+            object->velocity.x = object->velocity.x * damping;
+            object->velocity.y = object->velocity.y * damping;
             if (vec_length(object->velocity) < SLEEP_THRESHOLD) {
                 object->velocity = zero_vec;
             }
