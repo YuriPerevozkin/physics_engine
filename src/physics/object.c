@@ -1,3 +1,4 @@
+#include "physics.h"
 #include "math/vec2.h"
 #include "object.h"
 
@@ -10,7 +11,9 @@ create_particle(vec2_t position, real inverse_mass) {
         },
         .velocity = zero_vec,
         .acceleration = zero_vec,
+        .force_accum = zero_vec,
         .inverse_mass = inverse_mass,
+        .apply_physics = &apply_physics_particle,
     };
 }
 

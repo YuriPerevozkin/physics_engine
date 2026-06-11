@@ -19,7 +19,7 @@ extern float damping;
 /* physics.c */
 world_t init_world();
 void add_object(world_t* world, object_t object);
-void apply_physics(object_t* object);
+void apply_physics_particle(object_t* object);
 void remove_object(world_t* world, int index);
 
 #endif // PHYSICS_H

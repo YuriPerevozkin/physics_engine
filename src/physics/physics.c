@@ -36,22 +36,18 @@ remove_object(world_t* world, int index) {
 }
 
 void
-apply_physics(object_t* object) {
-    switch (object->type) {
-        case PARTICLE:;
-            particle_t* particle = &object->shape.particle;
-            particle->position = vec_plus_vec(particle->position, scaled_vec(object->velocity, DURATION));
+apply_physics_particle(object_t* object) {
+    particle_t* particle = &object->shape.particle;
+    particle->position = vec_plus_vec(particle->position, scaled_vec(object->velocity, DURATION));
 
-            vec2_t force = {0.0f, g / object->inverse_mass};
-            vec2_t resulting_acc = object->acceleration;
-            resulting_acc = vec_plus_vec(resulting_acc, scaled_vec(force, object->inverse_mass));
+    object->force_accum = (vec2_t) {0.0f, g / object->inverse_mass};
+    vec2_t resulting_acc = object->acceleration;
+    resulting_acc = vec_plus_vec(resulting_acc, scaled_vec(object->force_accum, object->inverse_mass));
 
-            object->velocity = vec_plus_vec(object->velocity, scaled_vec(resulting_acc, DURATION));
-            object->velocity.x = object->velocity.x * damping;
-            object->velocity.y = object->velocity.y * damping;
-            if (vec_length(object->velocity) < SLEEP_THRESHOLD) {
-                object->velocity = zero_vec;
-            }
-            break;
+    object->velocity = vec_plus_vec(object->velocity, scaled_vec(resulting_acc, DURATION));
+    object->velocity.x = object->velocity.x * damping;
+    object->velocity.y = object->velocity.y * damping;
+    if (vec_length(object->velocity) < SLEEP_THRESHOLD) {
+        object->velocity = zero_vec;
     }
 }

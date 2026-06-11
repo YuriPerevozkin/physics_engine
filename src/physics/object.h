@@ -4,6 +4,9 @@
 
 #include "math/vec2.h"
 
+typedef struct object object_t;
+typedef void (*physics_strategy)(object_t*);
+
 typedef enum {
     PARTICLE,
     CIRCLE,
@@ -32,7 +35,7 @@ typedef struct triangle {
     vec2_t c;
 } triangle_t;
 
-typedef struct object {
+struct object {
     object_type_e type;
     union {
         particle_t particle;
@@ -42,8 +45,10 @@ typedef struct object {
     } shape;
     vec2_t velocity;
     vec2_t acceleration;
+    vec2_t force_accum;
     real inverse_mass;
-} object_t;
+    physics_strategy apply_physics;
+};
 
 /* object.c */
 object_t create_particle(vec2_t position, real inverse_mass);
