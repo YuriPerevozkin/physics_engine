@@ -54,10 +54,10 @@ main() {
     world_t world = init_world();
 
     world_edit_t world_edit = init_world_edit();
-    add_variable(&world_edit, (Rectangle) {10, 10, 100, 20}, "9.807", &g_editor, &g_get_text);
-    add_variable(&world_edit, (Rectangle) {10, 40, 100, 20}, "0.997", &damping_editor, &damping_get_text);
+    add_variable(&world_edit, (Rectangle) {10, 40, 100, 20}, "9.807", &g_editor, &g_get_text);
+    add_variable(&world_edit, (Rectangle) {10, 70, 100, 20}, "0.997", &damping_editor, &damping_get_text);
 
-    add_object(&world, create_particle((vec2_t) {500.0f, 500.0f}, 1.0f/100));
+    add_object(&world, create_particle((vec2_t) {500.0f, 400.0f}, 1.0f/100));
     world.objects[world.objects_n-1].velocity.y = -60.0f;
     world.objects[world.objects_n-1].acceleration.y = -20.0f;
     int firework_life = 200;
@@ -76,7 +76,7 @@ main() {
         if (firework_alive) {
             firework_life--;
             if (firework_life <= 0) {
-                for (int i = 0; i < 500; i++) {
+                for (int i = 0; i < 200; i++) {
                     add_object(&world, create_particle(world.objects[0].shape.particle.position, 1.0f/10.0f));
                     real random_angle = ((real) rand() / RAND_MAX) * 2.0f * PI;
                     real random_speed = ((real) rand() / RAND_MAX) * 100.0f;
@@ -92,53 +92,61 @@ main() {
 
         for (int i = 0; i < world_edit.variables_n; i++) {
             if (CheckCollisionPointRec(mouse_pos, world_edit.variables[i].text_rect)) {
-                world_edit.variables[i].text_color = GREEN;
+                world_edit.variables[i].text_color = BLUE;
                 if (!show_input) {
                     shown_input_index = i;
                     break;
                 }
             }
             else {
+                if (!show_input) {
+                    shown_input_index = -1;
+                }
                 world_edit.variables[i].text_color = WHITE;
             }
         }
 
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-            if (!creating_object) {
-                if (!show_input) {
-                    if (shown_input_index != -1) {
-                        show_input = 1;
-                    } else {
-                        creating_object = 1;
-                        mouse_start = (vec2_t){mouse_pos.x, mouse_pos.y};
-                    }
-                }
+        if (!creating_object && !show_input && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+            if (shown_input_index != -1) {
+                show_input = 1;
+            } else {
+                creating_object = 1;
+                mouse_start = (vec2_t){mouse_pos.x, mouse_pos.y};
             }
         }
-        if (IsMouseButtonUp(MOUSE_BUTTON_LEFT)) {
-            if (creating_object) {
-                mouse_end = (vec2_t){mouse_pos.x, mouse_pos.y};
-                vec2_t drag_vector = vec_minus_vec(mouse_end, mouse_start);
-                add_object(&world, create_particle((vec2_t) {mouse_start.x, mouse_start.y}, 1.0f/1));
-                world.objects[world.objects_n-1].velocity = drag_vector;
-                creating_object = 0;
-            }
-        }
-
-        if (show_input) {
-            world_edit.variables[shown_input_index].editor(&world_edit.variables[shown_input_index]);
+        if (creating_object && IsMouseButtonUp(MOUSE_BUTTON_LEFT)) {
+            mouse_end = (vec2_t){mouse_pos.x, mouse_pos.y};
+            vec2_t drag_vector = vec_minus_vec(mouse_end, mouse_start);
+            add_object(&world, create_particle((vec2_t) {mouse_start.x, mouse_start.y}, 1.0f/1));
+            world.objects[world.objects_n-1].velocity = drag_vector;
+            creating_object = 0;
         }
 
         BeginDrawing();
             ClearBackground(BLACK);
+            for (int i = 0; i < world.objects_n; i++) {
+                if (world.objects[i].type == PARTICLE) {
+                    if (world.objects[i].shape.particle.position.x < 0
+                        || world.objects[i].shape.particle.position.x > GetScreenWidth()
+                        || world.objects[i].shape.particle.position.y < 0
+                        || world.objects[i].shape.particle.position.y > GetScreenHeight()) {
+                        remove_object(&world, i);
+                    }
+                }
+                world.objects[i].apply_physics(&world.objects[i]);
+                draw_object(world.objects[i]);
+            }
+            DrawText("World Edit:", 10, 10, 20, WHITE);
             for (int i = 0; i < world_edit.variables_n; i++) {
                 DrawText(world_edit.variables[i].get_text(), world_edit.variables[i].text_rect.x, world_edit.variables[i].text_rect.y, 20, world_edit.variables[i].text_color);
             }
 
-            for (int i = 0; i < world.objects_n; i++) {
-                apply_physics(&world.objects[i]);
-                draw_object(world.objects[i]);
+            DrawText(TextFormat("Objects: %d", world.objects_n), 500, 10, 20, WHITE);
+
+            if (show_input) {
+                world_edit.variables[shown_input_index].editor(&world_edit.variables[shown_input_index]);
             }
+
         EndDrawing();
     }
     CloseWindow();
