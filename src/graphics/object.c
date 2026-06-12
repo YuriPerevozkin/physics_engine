@@ -36,8 +36,8 @@ CreateCircleTexture(int size, Color color) {
 void
 draw_circles(world_t world, Texture2D texture) {
     for (int i = 0; i < world.circles_n; i++) {
-        transform_t transform = world.transforms[i];
+        vec2_t position = world.positions[i];
         circle_t* circle = &world.circles[i];
-        DrawTexture(texture, transform.position.x, transform.position.y, RED);
+        DrawTexture(texture, position.x, position.y, RED);
     }
 }

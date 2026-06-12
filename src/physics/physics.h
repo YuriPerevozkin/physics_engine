@@ -2,7 +2,6 @@
 #define PHYSICS_H
 
 
-#include <stddef.h>
 #include "object.h"
 
 #define FPS 60
@@ -11,7 +10,12 @@
 #define MAX_BODIES 100000
 
 typedef struct world {
-    transform_t transforms[MAX_BODIES];
+    vec2_t positions[MAX_BODIES];
+    vec2_t velocities[MAX_BODIES];
+    vec2_t accelerations[MAX_BODIES];
+    vec2_t force_accums[MAX_BODIES];
+    real inverse_masses[MAX_BODIES];
+
     circle_t circles[MAX_BODIES];
     int circles_n;
 

@@ -5,7 +5,6 @@
 #define RAYGUI_IMPLEMENTATION
 #include "../lib/raygui.h"
 #include "physics/physics.h"
-#include "physics/object.h"
 #include "physics/math/vec2.h"
 #include "graphics/graphics.h"
 #include "graphics/world_edit.h"
@@ -63,8 +62,8 @@ main() {
     add_variable(&world_edit, (Rectangle) {10, 70, 100, 20}, "0.997", &damping_editor, &damping_get_text);
 
     add_circle(&world, (vec2_t){500.0f, 400.0f}, 1.0f/100, 1);
-    world.transforms[0].velocity.y = -60.0f;
-    world.transforms[0].acceleration.y = -20.0f;
+    world.velocities[0].y = -60.0f;
+    world.accelerations[0].y = -20.0f;
     int firework_life = 100;
     int firework_alive = 1;
 
@@ -83,11 +82,11 @@ main() {
             firework_life--;
             if (firework_life <= 0) {
                 for (int i = 0; i < 900; i++) {
-                    add_circle(&world, world.transforms[0].position, 1.0f/10.0f, 1);
+                    add_circle(&world, world.positions[0], 1.0f/10.0f, 1);
                     real random_angle = ((real) rand() / RAND_MAX) * 2.0f * PI;
                     real random_speed = ((real) rand() / RAND_MAX) * 100.0f;
-                    world.transforms[world.circles_n-1].velocity.x = cosf(random_angle) * random_speed;
-                    world.transforms[world.circles_n-1].velocity.y = sinf(random_angle) * random_speed;
+                    world.velocities[world.circles_n-1].x = cosf(random_angle) * random_speed;
+                    world.velocities[world.circles_n-1].y = sinf(random_angle) * random_speed;
                 }
                 remove_circle(&world, 0);
                 firework_alive = 0;
@@ -124,7 +123,7 @@ main() {
             mouse_end = (vec2_t){mouse_pos.x, mouse_pos.y};
             vec2_t drag_vector = vec_minus_vec(mouse_end, mouse_start);
             add_circle(&world, (vec2_t) {mouse_start.x, mouse_start.y}, 1, 1.0f/1);
-            world.transforms[world.circles_n - 1].velocity = drag_vector;
+            world.velocities[world.circles_n - 1] = drag_vector;
             creating_object = 0;
         }
 
