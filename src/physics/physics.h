@@ -6,20 +6,23 @@
 #include "object.h"
 
 #define FPS 60
+#define INITIAL_G 9.807
+#define INITIAL_DAMPING 0.997
+#define MAX_BODIES 100000
 
 typedef struct world {
-    object_t* objects;
-    size_t objects_n;
-    size_t cap;
-} world_t;
+    transform_t transforms[MAX_BODIES];
+    circle_t circles[MAX_BODIES];
+    int circles_n;
 
-extern float g;
-extern float damping;
+    real g;
+    real damping;
+} world_t;
 
 /* physics.c */
 world_t init_world();
-void add_object(world_t* world, object_t object);
-void apply_physics_particle(object_t* object);
-void remove_object(world_t* world, int index);
+void add_circle(world_t* world, vec2_t position, real inverse_mass, real radius);
+void remove_circle(world_t* world, int i);
+void update_circles(world_t* world);
 
 #endif // PHYSICS_H

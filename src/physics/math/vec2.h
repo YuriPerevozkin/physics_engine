@@ -12,6 +12,7 @@ typedef struct vec2 {
 extern vec2_t zero_vec;
 
 real vec_length(vec2_t vec);
+vec2_t normilize(vec2_t vec);
 vec2_t vec_plus_vec(vec2_t vec1, vec2_t vec2);
 vec2_t vec_minus_vec(vec2_t vec1, vec2_t vec2);
 vec2_t scaled_vec(vec2_t vec, real n);

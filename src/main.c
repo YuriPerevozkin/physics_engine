@@ -4,14 +4,21 @@
 #include <raylib.h>
 #define RAYGUI_IMPLEMENTATION
 #include "../lib/raygui.h"
-#include "physics/object.h"
 #include "physics/physics.h"
+#include "physics/object.h"
 #include "physics/math/vec2.h"
 #include "graphics/graphics.h"
 #include "graphics/world_edit.h"
 
-static const int SCREEN_WIDTH = 800;
-static const int SCREEN_HEIGHT = 450;
+
+static const int SCREEN_WIDTH = 1400;
+static const int SCREEN_HEIGHT = 850;
+
+world_t world = {
+    .circles_n = 0,
+    .g = INITIAL_G,
+    .damping = INITIAL_DAMPING,
+};
 
 static int show_input = 0;
 static int shown_input_index = -1;
@@ -24,7 +31,7 @@ void g_editor(variable_t* variable) {
     if (result >= 1) {
         show_input = 0;
         shown_input_index = -1;
-        g = atof(variable->input);
+        world.g = atof(variable->input);
     }
 }
 
@@ -36,31 +43,29 @@ void damping_editor(variable_t* variable) {
     if (result >= 1) {
         show_input = 0;
         shown_input_index = -1;
-        damping = atof(variable->input);
+        world.damping = atof(variable->input);
     }
 }
 const char* g_get_text() {
-    return TextFormat("g = %.3f", g);
+    return TextFormat("g = %.3f", world.g);
 }
 
 const char* damping_get_text() {
-    return TextFormat("damping = %.3f", damping);
+    return TextFormat("damping = %.3f", world.damping);
 }
 
 int
 main() {
     srand(time(NULL));
 
-    world_t world = init_world();
-
     world_edit_t world_edit = init_world_edit();
     add_variable(&world_edit, (Rectangle) {10, 40, 100, 20}, "9.807", &g_editor, &g_get_text);
     add_variable(&world_edit, (Rectangle) {10, 70, 100, 20}, "0.997", &damping_editor, &damping_get_text);
 
-    add_object(&world, create_particle((vec2_t) {500.0f, 400.0f}, 1.0f/100));
-    world.objects[world.objects_n-1].velocity.y = -60.0f;
-    world.objects[world.objects_n-1].acceleration.y = -20.0f;
-    int firework_life = 200;
+    add_circle(&world, (vec2_t){500.0f, 400.0f}, 1.0f/100, 1);
+    world.transforms[0].velocity.y = -60.0f;
+    world.transforms[0].acceleration.y = -20.0f;
+    int firework_life = 100;
     int firework_alive = 1;
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Physics Engine");
@@ -70,20 +75,21 @@ main() {
     static int creating_object = 0;
     static vec2_t mouse_start;
     static vec2_t mouse_end;
+    Texture2D circle_text = CreateCircleTexture(4, RED);
 
     while (!WindowShouldClose())
     {
         if (firework_alive) {
             firework_life--;
             if (firework_life <= 0) {
-                for (int i = 0; i < 200; i++) {
-                    add_object(&world, create_particle(world.objects[0].shape.particle.position, 1.0f/10.0f));
+                for (int i = 0; i < 900; i++) {
+                    add_circle(&world, world.transforms[0].position, 1.0f/10.0f, 1);
                     real random_angle = ((real) rand() / RAND_MAX) * 2.0f * PI;
                     real random_speed = ((real) rand() / RAND_MAX) * 100.0f;
-                    world.objects[world.objects_n-1].velocity.x = cosf(random_angle) * random_speed;
-                    world.objects[world.objects_n-1].velocity.y = sinf(random_angle) * random_speed;
+                    world.transforms[world.circles_n-1].velocity.x = cosf(random_angle) * random_speed;
+                    world.transforms[world.circles_n-1].velocity.y = sinf(random_angle) * random_speed;
                 }
-                remove_object(&world, 0);
+                remove_circle(&world, 0);
                 firework_alive = 0;
             }
         }
@@ -117,31 +123,23 @@ main() {
         if (creating_object && IsMouseButtonUp(MOUSE_BUTTON_LEFT)) {
             mouse_end = (vec2_t){mouse_pos.x, mouse_pos.y};
             vec2_t drag_vector = vec_minus_vec(mouse_end, mouse_start);
-            add_object(&world, create_particle((vec2_t) {mouse_start.x, mouse_start.y}, 1.0f/1));
-            world.objects[world.objects_n-1].velocity = drag_vector;
+            add_circle(&world, (vec2_t) {mouse_start.x, mouse_start.y}, 1, 1.0f/1);
+            world.transforms[world.circles_n - 1].velocity = drag_vector;
             creating_object = 0;
         }
 
         BeginDrawing();
             ClearBackground(BLACK);
-            for (int i = 0; i < world.objects_n; i++) {
-                if (world.objects[i].type == PARTICLE) {
-                    if (world.objects[i].shape.particle.position.x < 0
-                        || world.objects[i].shape.particle.position.x > GetScreenWidth()
-                        || world.objects[i].shape.particle.position.y < 0
-                        || world.objects[i].shape.particle.position.y > GetScreenHeight()) {
-                        remove_object(&world, i);
-                    }
-                }
-                world.objects[i].apply_physics(&world.objects[i]);
-                draw_object(world.objects[i]);
-            }
+            update_circles(&world);
+            draw_circles(world, circle_text);
+
             DrawText("World Edit:", 10, 10, 20, WHITE);
             for (int i = 0; i < world_edit.variables_n; i++) {
                 DrawText(world_edit.variables[i].get_text(), world_edit.variables[i].text_rect.x, world_edit.variables[i].text_rect.y, 20, world_edit.variables[i].text_color);
             }
 
-            DrawText(TextFormat("Objects: %d", world.objects_n), 500, 10, 20, WHITE);
+            DrawFPS(500, 10);
+            DrawText(TextFormat("Objects: %d", world.circles_n), 500, 40, 20, WHITE);
 
             if (show_input) {
                 world_edit.variables[shown_input_index].editor(&world_edit.variables[shown_input_index]);

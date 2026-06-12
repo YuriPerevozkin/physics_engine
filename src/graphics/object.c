@@ -1,23 +1,43 @@
 #include <raylib.h>
-#include "../physics/object.h"
+#include "../physics/physics.h"
+
+Texture2D
+CreateCircleTexture(int size, Color color) {
+    // 1. Create an empty image
+    Image img = GenImageColor(size, size, BLANK);
+    
+    int center = size / 2;
+    int radius = size / 2 - 1; // Leave 1px padding
+
+    // 2. Manually draw the circle onto the CPU image
+    for (int y = 0; y < size; y++) {
+        for (int x = 0; x < size; x++) {
+            // Calculate distance from center
+            float dx = x - center;
+            float dy = y - center;
+            
+            // If inside radius, color the pixel
+            if ((dx*dx + dy*dy) <= (radius*radius)) {
+                ImageDrawPixel(&img, x, y, color);
+            }
+        }
+    }
+
+    // 3. Upload to GPU
+    Texture2D tex = LoadTextureFromImage(img);
+    UnloadImage(img); // Free CPU memory
+    
+    // 4. Important: Set filtering so scaling doesn't look pixelated
+    SetTextureFilter(tex, TEXTURE_FILTER_BILINEAR);
+    
+    return tex;
+}
 
 void
-draw_object(object_t object) {
-    switch (object.type) {
-        case PARTICLE:
-            DrawCircle(object.shape.particle.position.x, object.shape.particle.position.y, 2, RED);
-            break;
-        case CIRCLE:
-            DrawCircle(object.shape.circle.center.x, object.shape.circle.center.y, object.shape.circle.radius, RED);
-            break;
-        case RECTANGLE:
-            DrawRectangle(object.shape.rectangle.start.x, object.shape.rectangle.start.y, 
-                          object.shape.rectangle.width, object.shape.rectangle.height, GREEN);
-            break;
-        case TRIANGLE:
-            DrawTriangle((Vector2) {object.shape.triangle.a.x, object.shape.triangle.a.y}, 
-                         (Vector2) {object.shape.triangle.b.x, object.shape.triangle.b.y}, 
-                         (Vector2) {object.shape.triangle.c.x, object.shape.triangle.c.y}, BLUE);
-            break;
+draw_circles(world_t world, Texture2D texture) {
+    for (int i = 0; i < world.circles_n; i++) {
+        transform_t transform = world.transforms[i];
+        circle_t* circle = &world.circles[i];
+        DrawTexture(texture, transform.position.x, transform.position.y, RED);
     }
 }

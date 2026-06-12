@@ -9,6 +9,15 @@ vec_length(vec2_t vec) {
 }
 
 vec2_t
+normilize(vec2_t vec) {
+    real length = vec_length(vec);
+    return (vec2_t){
+        .x = vec.x / length,
+        .y = vec.y / length,
+    };
+}
+
+vec2_t
 vec_plus_vec(vec2_t vec1, vec2_t vec2) {
     return (vec2_t) {
         .x = vec1.x + vec2.x,
