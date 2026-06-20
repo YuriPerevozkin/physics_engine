@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <stddef.h>
 #include "../physics/physics.h"
 
 Texture2D
@@ -35,9 +36,9 @@ CreateCircleTexture(int size, Color color) {
 
 void
 draw_circles(world_t world, Texture2D texture) {
-    for (int i = 0; i < world.circles_n; i++) {
-        vec2_t position = world.positions[i];
-        circle_t* circle = &world.circles[i];
+    for (size_t i = 0; i < world.n_circles; i++) {
+        uint32_t index = world.circles_ids[i];
+        vec2_t position = world.positions[index];
         DrawTexture(texture, position.x, position.y, RED);
     }
 }

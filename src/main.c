@@ -1,4 +1,3 @@
-#include <math.h>
 #include <time.h>
 #include <stdlib.h>
 #include <raylib.h>
@@ -14,9 +13,13 @@ static const int SCREEN_WIDTH = 1400;
 static const int SCREEN_HEIGHT = 850;
 
 world_t world = {
-    .circles_n = 0,
     .g = INITIAL_G,
     .damping = INITIAL_DAMPING,
+
+    .n_entities = 0,
+    .n_free = 0,
+
+    .n_circles = 0,
 };
 
 static int show_input = 0;
@@ -61,12 +64,6 @@ main() {
     add_variable(&world_edit, (Rectangle) {10, 40, 100, 20}, "9.807", &g_editor, &g_get_text);
     add_variable(&world_edit, (Rectangle) {10, 70, 100, 20}, "0.997", &damping_editor, &damping_get_text);
 
-    add_circle(&world, (vec2_t){500.0f, 400.0f}, 1.0f/100, 1);
-    world.velocities[0].y = -60.0f;
-    world.accelerations[0].y = -20.0f;
-    int firework_life = 100;
-    int firework_alive = 1;
-
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Physics Engine");
 
     SetTargetFPS(FPS);
@@ -78,21 +75,6 @@ main() {
 
     while (!WindowShouldClose())
     {
-        if (firework_alive) {
-            firework_life--;
-            if (firework_life <= 0) {
-                for (int i = 0; i < 900; i++) {
-                    add_circle(&world, world.positions[0], 1.0f/10.0f, 1);
-                    real random_angle = ((real) rand() / RAND_MAX) * 2.0f * PI;
-                    real random_speed = ((real) rand() / RAND_MAX) * 100.0f;
-                    world.velocities[world.circles_n-1].x = cosf(random_angle) * random_speed;
-                    world.velocities[world.circles_n-1].y = sinf(random_angle) * random_speed;
-                }
-                remove_circle(&world, 0);
-                firework_alive = 0;
-            }
-        }
-
         Vector2 mouse_pos = GetMousePosition();
 
         for (int i = 0; i < world_edit.variables_n; i++) {
@@ -122,14 +104,15 @@ main() {
         if (creating_object && IsMouseButtonUp(MOUSE_BUTTON_LEFT)) {
             mouse_end = (vec2_t){mouse_pos.x, mouse_pos.y};
             vec2_t drag_vector = vec_minus_vec(mouse_end, mouse_start);
-            add_circle(&world, (vec2_t) {mouse_start.x, mouse_start.y}, 1, 1.0f/1);
-            world.velocities[world.circles_n - 1] = drag_vector;
+            add_circle(&world, (vec2_t) {mouse_start.x, mouse_start.y}, 1.0f/1, 1);
+            world.velocities[world.circles_ids[world.n_circles - 1]] = drag_vector;
             creating_object = 0;
         }
 
         BeginDrawing();
             ClearBackground(BLACK);
-            update_circles(&world);
+            apply_gravity(&world);
+            integrate(&world);
             draw_circles(world, circle_text);
 
             DrawText("World Edit:", 10, 10, 20, WHITE);
@@ -138,12 +121,11 @@ main() {
             }
 
             DrawFPS(500, 10);
-            DrawText(TextFormat("Objects: %d", world.circles_n), 500, 40, 20, WHITE);
+            DrawText(TextFormat("Objects: %d", world.n_entities), 500, 40, 20, WHITE);
 
             if (show_input) {
                 world_edit.variables[shown_input_index].editor(&world_edit.variables[shown_input_index]);
             }
-
         EndDrawing();
     }
     CloseWindow();

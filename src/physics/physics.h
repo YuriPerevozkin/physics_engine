@@ -2,31 +2,38 @@
 #define PHYSICS_H
 
 
-#include "object.h"
+#include <stdint.h>
+#include "math/precision.h"
+#include "math/vec2.h"
 
 #define FPS 60
 #define INITIAL_G 9.807
 #define INITIAL_DAMPING 0.997
-#define MAX_BODIES 100000
+#define MAX_ENTITIES 100000
 
 typedef struct world {
-    vec2_t positions[MAX_BODIES];
-    vec2_t velocities[MAX_BODIES];
-    vec2_t accelerations[MAX_BODIES];
-    vec2_t force_accums[MAX_BODIES];
-    real inverse_masses[MAX_BODIES];
+    float g;
+    float damping;
 
-    circle_t circles[MAX_BODIES];
-    int circles_n;
+    uint32_t n_entities;
+    uint32_t n_free;
+    uint32_t free_ids[MAX_ENTITIES];
 
-    real g;
-    real damping;
+    vec2_t positions[MAX_ENTITIES];
+    vec2_t velocities[MAX_ENTITIES];
+    vec2_t accelerations[MAX_ENTITIES];
+    vec2_t force_accums[MAX_ENTITIES];
+    float inverse_masses[MAX_ENTITIES];
+
+    uint32_t n_circles;
+    uint32_t circles_ids[MAX_ENTITIES];
+    float radii[MAX_ENTITIES];
 } world_t;
 
 /* physics.c */
-world_t init_world();
-void add_circle(world_t* world, vec2_t position, real inverse_mass, real radius);
+void add_circle(world_t* world, vec2_t position, float inverse_mass, float radius);
 void remove_circle(world_t* world, int i);
-void update_circles(world_t* world);
+void apply_gravity(world_t* world);
+void integrate(world_t* world);
 
 #endif // PHYSICS_H
